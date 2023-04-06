@@ -29,8 +29,8 @@ export const game = createSlice({
   },
 })
 
-export const startGame = input => {
-  return dispatch => {
+export const startGame = (input) => {
+  return (dispatch) => {
     dispatch(ui.actions.setLoading(true))
     const newUser = input + uniqid()
     dispatch(game.actions.createUser(newUser))
@@ -45,9 +45,9 @@ export const startGame = input => {
       }),
     }
 
-    fetch('https://wk16-backend.herokuapp.com/start', options)
-      .then(res => res.json())
-      .then(json => {
+    fetch('https://labyrinth.technigo.io/start', options)
+      .then((res) => res.json())
+      .then((json) => {
         setTimeout(() => {
           dispatch(game.actions.setCurrentStep(json))
           dispatch(ui.actions.setLoading(false))
@@ -56,7 +56,7 @@ export const startGame = input => {
   }
 }
 
-export const nextStep = action => {
+export const nextStep = (action) => {
   return (dispatch, getState) => {
     dispatch(ui.actions.setLoading(true))
     dispatch(game.actions.addHistory(action))
@@ -72,9 +72,9 @@ export const nextStep = action => {
       }),
     }
 
-    fetch('https://wk16-backend.herokuapp.com/action', options)
-      .then(res => res.json())
-      .then(json => {
+    fetch('https://labyrinth.technigo.io/action', options)
+      .then((res) => res.json())
+      .then((json) => {
         setTimeout(() => {
           dispatch(game.actions.setCurrentStep(json))
           dispatch(ui.actions.setLoading(false))
@@ -83,17 +83,21 @@ export const nextStep = action => {
   }
 }
 
-export const navigateWithKeys = action => {
+export const navigateWithKeys = (action) => {
   return (dispatch, getState) => {
     let nextAction = undefined
     if (action.key === 'ArrowUp') {
-      nextAction = getState().game.currentStep.actions.find(action => action.direction === 'North')
+      nextAction = getState().game.currentStep.actions.find(
+        (action) => action.direction === 'North'
+      )
     } else if (action.key === 'ArrowDown') {
-      nextAction = getState().game.currentStep.actions.find(action => action.direction === 'South')
+      nextAction = getState().game.currentStep.actions.find(
+        (action) => action.direction === 'South'
+      )
     } else if (action.key === 'ArrowLeft') {
-      nextAction = getState().game.currentStep.actions.find(action => action.direction === 'West')
+      nextAction = getState().game.currentStep.actions.find((action) => action.direction === 'West')
     } else if (action.key === 'ArrowRight') {
-      nextAction = getState().game.currentStep.actions.find(action => action.direction === 'East')
+      nextAction = getState().game.currentStep.actions.find((action) => action.direction === 'East')
     }
     if (nextAction) {
       dispatch(nextStep(nextAction))
